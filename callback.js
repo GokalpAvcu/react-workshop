@@ -25,9 +25,9 @@ import fetch from "node-fetch";
 import axios from "axios"; // node fetch kütüphanesi yerine kullanabileceğimiz diğer kütüphane axios'dur kullanımı daha kolaydır
 
 /*
-fetch("https://jsonplaceholder.typicode.com/users") //api'den bize data(response) döndükten sonra
-.then((data) => data.json()) // burdaki data'da api'den ne geliyorsa o getiriliyor data.json kısmından data dönüyor
-.then((users)=>{            // o data burdaki users'a düşüyor ve ordan alıp kullanmaya devam ediyoruz
+fetch("https://jsonplaceholder.typicode.com/users") // api'den bize data(response) döndükten sonra
+.then((data) => data.json())                       // burdaki data'da api'den ne geliyorsa o getiriliyor data.json kısmından data dönüyor
+.then((users)=>{                                  // o data burdaki users'a düşüyor ve ordan alıp kullanmaya devam ediyoruz
     console.log("Users Yuklendi!", users); 
 
     fetch("https://jsonplaceholder.typicode.com/posts/1")
@@ -40,9 +40,32 @@ fetch("https://jsonplaceholder.typicode.com/users") //api'den bize data(response
 
 }); */
 
+// yukarıdaki yazdigim kodu biraz daha düzenleyip async fonksiyonunun icinde await ile asenkron işlemlerimi iç içe yazmadan(yukarıdaki gibi) sıraya koydum
+/* async function getData () {  
+    const users = await {
+        await fetch("https://jsonplaceholder.typicode.com/users")
+    }.json();
+
+    const post1 = await {
+        await fetch("https://jsonplaceholder.typicode.com/posts/1")
+    }.json();
+
+    const post2 = await {
+        await fetch("https://jsonplaceholder.typicode.com/post2")
+    }.json();
+
+    console.log("users", users);
+    console.log("post1", post1);
+    console.log("post2", post2);
+} 
+
+getData() */
+
 //getData();
 
-/*(async () => {    //asenkron olarak tanimladim
+// burda yukarıda yazdigimiz kodu anonim fonksiyon olarak yazdik axios kullandık, axios'un node fetch'e göre artısı vardır(örnegin yukarida iki kere await yazfık json kullandik)
+
+/*(async () => {    // asenkron olarak tanimladim
 
 const { data: users } = await axios("https://jsonplaceholder.typicode.com/users") // await yazıp kodu burda beklettim, eğer await yazmazsam kodu beklemez bir sonraki satıra devam eder
 
@@ -85,12 +108,12 @@ getComments(1)
 
 //--------- burada yukarıdaki kod bloğunu axios ile olusturduk------------------------------------------
 
-const getUsers = () => { 
+const getUsers = () => { // burdaki getUsers asagidaki endpoit'te ki("https://jsonplaceholder.typicode.com/users") veriyi alıp asagida resolve ediyor
 return new Promise(async (resolve, reject) => { 
      const { data } = await axios ("https://jsonplaceholder.typicode.com/users"); // await mutlaka async bir fonksiyonun icinde olmalı
 
-    // resolve(data);
-    reject("Bir sorun  oluştu");
+    resolve(data);
+    // reject("Bir sorun  oluştu");
     });  
 };
 
@@ -99,8 +122,8 @@ const getPost = (post_id) => {
 return new Promise(async(resolve, reject) => {
     const { data } = await axios ("https://jsonplaceholder.typicode.com/posts/" + post_id);
 
-    //resolve(data);
-    reject("Bir sorun daha oluştu");
+    resolve(data);
+    //reject("Bir sorun daha oluştu");
     });
 };
 
@@ -126,3 +149,10 @@ console.log(post);
     console.log(e);
 }
 })();
+
+// eger birden fazla promise var ise elimizde onlarin her birini yukarıdaki gibi tek tek calistirmaktansa asagida array olarak verip her birini calistirilmasini ve her birinden dönen sonucu log'lamasını istedim onu da
+// promiseAll ifadesi ile gerceklestirdim
+
+Promise.all([getUsers(), getPost(1)])
+.then(console.log)
+.catch(consle.log);
