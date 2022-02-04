@@ -40,13 +40,15 @@ fetch("https://jsonplaceholder.typicode.com/users") //api'den bize data(response
 
 }); */
 
+//getData();
 
-/*(async () => { //asenkron olarak tanimladim
-const users =  await axios("https://jsonplaceholder.typicode.com/users") // await yazıp kodu burda beklettim, eğer await yazmazsam kodu beklemez bir sonraki satıra devam eder
+/*(async () => {    //asenkron olarak tanimladim
 
-const post1 =  await fetch("https://jsonplaceholder.typicode.com/users") // await yazıp kodu burda beklettim, eğer await yazmazsam kodu beklemez bir sonraki satıra devam eder
+const { data: users } = await axios("https://jsonplaceholder.typicode.com/users") // await yazıp kodu burda beklettim, eğer await yazmazsam kodu beklemez bir sonraki satıra devam eder
 
-const post2 =  await fetch("https://jsonplaceholder.typicode.com/users") // await yazıp kodu burda beklettim, eğer await yazmazsam kodu beklemez bir sonraki satıra devam eder
+const { data: post 1 } = await axios("https://jsonplaceholder.typicode.com/posts/1") // await yazıp kodu burda beklettim, eğer await yazmazsam kodu beklemez bir sonraki satıra devam eder
+
+const { data: post2 } =  await axios("https://jsonplaceholder.typicode.com/posts/2") // await yazıp kodu burda beklettim, eğer await yazmazsam kodu beklemez bir sonraki satıra devam eder
 
 console.log("users", users);
 console.log("post1", post1);
@@ -67,12 +69,11 @@ getComments()
 .catch((e) => console.log(e)); */ // reject oldugunda catch bloguna düşer ve hata yakalanır
 
 
-const getComments = (number) => { 
+/*const getComments = (number) => { 
     return new Promise((resolve, reject) => { 
     if (number === 1){     // number eger denkse 1'e resolve et değilse reject et
         resolve({ text: "Selam" });
-    }
-   
+    }  
     reject("Oops bir problem oluştu!");
     });  
 
@@ -80,4 +81,48 @@ const getComments = (number) => {
 
 getComments(1)
 .then((data) => console.log(data)) 
-.catch((e) => console.log(e));
+.catch((e) => console.log(e)); */
+
+//--------- burada yukarıdaki kod bloğunu axios ile olusturduk------------------------------------------
+
+const getUsers = () => { 
+return new Promise(async (resolve, reject) => { 
+     const { data } = await axios ("https://jsonplaceholder.typicode.com/users"); // await mutlaka async bir fonksiyonun icinde olmalı
+
+    // resolve(data);
+    reject("Bir sorun  oluştu");
+    });  
+};
+
+
+const getPost = (post_id) => {
+return new Promise(async(resolve, reject) => {
+    const { data } = await axios ("https://jsonplaceholder.typicode.com/posts/" + post_id);
+
+    //resolve(data);
+    reject("Bir sorun daha oluştu");
+    });
+};
+
+
+/*getUsers()
+.then((data) => console.log(data))  // burdaki islemlerimiz sırali gitmez cunku promise kullandık asenkron fonksiyonlar
+.catch((e) => console.log(e));   
+
+getPost(1)
+.then((data) => console.log(data)) 
+.catch((e) => console.log(e)); */
+
+// Burda ise yukarıdaki kodu async ve await ekleyerek senkron halde cagirdik
+
+((async)  => {
+try {
+const users = await getUsers();
+const post = await getPost(1);
+
+console.log(users);
+console.log(post);
+} catch (e) {
+    console.log(e);
+}
+})();
